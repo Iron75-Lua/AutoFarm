@@ -80,6 +80,97 @@ stroke.Parent = main
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 30)
 title.Position = UDim2.new(0, 0, 0, 15)
+title.Text = "AutoFarm"
+title.TextColor3 = Color3.fromRGB(200, 200, 200)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.Parent = main
+
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, 0, 0, 22)
+status.Position = UDim2.new(0, 0, 0, 50)
+status.Text = "INACTIVO"
+status.TextColor3 = Color3.fromRGB(255, 90, 90)
+status.BackgroundTransparency = 1
+status.Font = Enum.Font.GothamBold
+status.TextSize = 15
+status.Parent = main
+
+local btn = Instance.new("TextButton")
+btn.Size = UDim2.new(0.6, 0, 0, 36)
+btn.Position = UDim2.new(0.2, 0, 0, 85)
+btn.Text = "ACTIVAR"
+btn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+btn.Font = Enum.Font.GothamBold
+btn.TextSize = 15
+btn.Parent = main
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 8)
+btnCorner.Parent = btn
+
+local credits = Instance.new("TextLabel")
+credits.Size = UDim2.new(1, 0, 0, 20)
+credits.Position = UDim2.new(0, 0, 0, 135)
+credits.Text = "MADE-BY Silent"
+credits.TextColor3 = Color3.fromRGB(255, 255, 255)
+credits.BackgroundTransparency = 1
+credits.Font = Enum.Font.Gotham
+credits.TextSize = 10
+credits.Parent = main
+
+local loopConnection
+
+local function collect()
+    while isActive do
+        for i = 1, RUNS do
+            if not isActive then break end
+            pcall(function() remote:FireServer() end)
+            task.wait(0.1)
+        end
+        if isActive then task.wait(INTERVAL) end
+    end
+end
+
+btn.MouseButton1Click:Connect(function()
+    isActive = not isActive
+    if isActive then
+        btn.Text = "DESACTIVAR"
+        btn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        status.Text = "ACTIVO"
+        status.TextColor3 = Color3.fromRGB(90, 255, 90)
+        loopConnection = task.spawn(collect)
+    else
+        btn.Text = "ACTIVAR"
+        btn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        status.Text = "INACTIVO"
+        status.TextColor3 = Color3.fromRGB(255, 90, 90)
+        if loopConnection then task.cancel(loopConnection) end
+    end
+end)
+
+task.spawn(function()
+    while gui.Parent do
+        local tweenInfo = TweenInfo.new(2.0, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+        
+        TweenService:Create(stroke, tweenInfo, {Color = Color3.fromRGB(153, 255, 255)}):Play()
+        task.wait(2.0)
+        TweenService:Create(title, tweenInfo, {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+        TweenService:Create(credits, tweenInfo, {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+        task.wait(3.0)
+        
+        TweenService:Create(stroke, tweenInfo, {Color = Color3.fromRGB(0, 0, 0)}):Play()
+        task.wait(2.0)
+        TweenService:Create(title, tweenInfo, {TextColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+        TweenService:Create(credits, tweenInfo, {TextColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+        task.wait(3.0)
+    end
+end)
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 15)
 title.Text = "COLLECTOR"
 title.TextColor3 = Color3.fromRGB(200, 200, 200)
 title.BackgroundTransparency = 1
